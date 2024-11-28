@@ -1,0 +1,24 @@
+!pip install textblob
+!pip install transformers torch
+from textblob import TextBlob
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+def auto_correct(text):
+    blob = TextBlob(text)
+    corrected_text = blob.correct()
+    return str(corrected_text)
+
+def auto_complete(text, max_length=50):
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+    model = GPT2LMHeadModel.from_pretrained("gpt2")
+    inputs = tokenizer.encode(text, return_tensors="pt")
+    outputs = model.generate(inputs, max_length=max_length, num_return_sequences=1, no_repeat_ngram_size=2)
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+input_text = "she is a fantasyy"
+corrected_text = auto_correct(input_text)
+print("Original Text: ", input_text)
+print("Corrected Text: ", corrected_text)
+input_text = "the phone is"
+completed_text = auto_complete(input_text)
+print("Input Text: ", input_text)
+print("Auto-completed Text: ", completed_text)
